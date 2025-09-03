@@ -9,7 +9,7 @@ import NotFound from "./pages/NotFound";
 import Login from "./pages/login";
 
 // Admin layout & pages
-import ProtectedRoute from "@/routes/ProtectedRoute";
+import ProtectedRoute from "@/routes/protectedRoute";
 import AdminLayout from "@/layouts/AdminLayout";
 import Dashboard from "@/pages/admin/Dashboard";
 import Faq from "./pages/admin/Faq";
