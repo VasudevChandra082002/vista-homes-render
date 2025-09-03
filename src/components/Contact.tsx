@@ -1,3 +1,7 @@
+import React, { useState } from "react";
+import { useMutation } from "@tanstack/react-query";
+import { toast } from "sonner";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -5,41 +9,111 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Mail, Phone, MapPin, Clock, Send } from "lucide-react";
 
-const Contact = () => {
+import { createContactUs } from "@/api/contactUs.js"; // keep your existing .js helper
+
+type Payload = {
+  firstName: string;
+  lastName: string;
+  phone?: string;
+  email: string;
+  subject: string;
+  message: string;
+};
+
+const Contact: React.FC = () => {
   const contactInfo = [
     {
       icon: Phone,
       title: "Call Us",
-      details: ["+1 (555) 123-4567", "+1 (555) 987-6543"],
-      description: "Speak with our expert agents"
+      details: ["+919686102055"],
+      description: "Speak with our expert agents",
     },
     {
       icon: Mail,
       title: "Email Us",
-      details: ["info@primeestate.com", "support@primeestate.com"],
-      description: "Get detailed information via email"
+      details: ["info@sitrusgroup.com"],
+      description: "Get detailed information via email",
     },
     {
       icon: MapPin,
       title: "Visit Us",
-      details: ["123 Real Estate Blvd", "Downtown, NY 10001"],
-      description: "Visit our modern office space"
+      details: ["Vasavi Complex, 147, Seshadripuram Main Rd, Sripuram, Kumara Park West, Seshadripuram, Bengaluru, Karnataka 560020, India"],
+      description: "Visit our modern office space",
     },
-    {
-      icon: Clock,
-      title: "Office Hours",
-      details: ["Mon - Fri: 9:00 AM - 7:00 PM", "Sat - Sun: 10:00 AM - 5:00 PM"],
-      description: "We're here when you need us"
-    }
+    // {
+    //   icon: Clock,
+    //   title: "Office Hours",
+    //   details: ["Mon - Fri: 9:00 AM - 7:00 PM", "Sat - Sun: 10:00 AM - 5:00 PM"],
+    //   description: "We're here when you need us",
+    // },
   ];
+
+  // form state
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName]   = useState("");
+  const [email, setEmail]         = useState("");
+  const [phone, setPhone]         = useState("");
+  const [subject, setSubject]     = useState("");
+  const [message, setMessage]     = useState("");
+
+  // mutation
+  const createMutation = useMutation({
+    mutationFn: async (payload: Payload) => {
+      const res = await createContactUs(payload);
+      // your axios helper returns the raw axios response; unwrap common shapes:
+      return (res as any)?.data?.data ?? (res as any)?.data ?? res;
+    },
+    onSuccess: () => {
+      toast.success("Thanks! We received your message.");
+      // reset form
+      setFirstName("");
+      setLastName("");
+      setEmail("");
+      setPhone("");
+      setSubject("");
+      setMessage("");
+    },
+    onError: (err: any) => {
+      const msg = err?.response?.data?.error || err?.message || "Failed to send message.";
+      toast.error(msg);
+    },
+  });
+
+  const validate = () => {
+    if (!firstName.trim()) return "First name is required.";
+    if (!lastName.trim()) return "Last name is required.";
+    if (!email.trim()) return "Email is required.";
+    // quick email check
+    if (!/^\S+@\S+\.\S+$/.test(email)) return "Please enter a valid email.";
+    if (!subject.trim()) return "Subject is required.";
+    if (!message.trim()) return "Message is required.";
+    return null;
+  };
+
+  const onSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const error = validate();
+    if (error) {
+      toast.error(error);
+      return;
+    }
+    createMutation.mutate({
+      firstName: firstName.trim(),
+      lastName: lastName.trim(),
+      email: email.trim(),
+      phone: phone.trim() || undefined,
+      subject: subject.trim(),
+      message: message.trim(),
+    });
+  };
 
   return (
     <section id="contact" className="py-20 bg-background">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16 animate-fade-in">
-          <Badge className="mb-4 bg-accent/10 text-accent border-accent/20">
+          {/* <Badge className="mb-4 bg-accent/10 text-accent border-accent/20">
             Contact Us
-          </Badge>
+          </Badge> */}
           <h2 className="text-3xl md:text-5xl font-playfair font-bold text-foreground mb-4">
             Ready to Find Your
             <span className="text-primary block">Dream Property?</span>
@@ -53,8 +127,8 @@ const Contact = () => {
           {/* Contact Information */}
           <div className="lg:col-span-1 space-y-6 animate-slide-up">
             {contactInfo.map((info, index) => (
-              <Card 
-                key={index} 
+              <Card
+                key={index}
                 className="group border-0 shadow-card hover-lift bg-gradient-card transition-all duration-300"
                 style={{ animationDelay: `${index * 100}ms` }}
               >
@@ -91,24 +165,33 @@ const Contact = () => {
                 <h3 className="text-2xl font-playfair font-bold text-foreground mb-6">
                   Send Us a Message
                 </h3>
-                <form className="space-y-6">
+
+                <form className="space-y-6" onSubmit={onSubmit}>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2">
                       <label className="text-sm font-medium text-foreground">
                         First Name *
                       </label>
-                      <Input 
+                      <Input
                         placeholder="Enter your first name"
                         className="h-12 border-border/50 focus:border-primary transition-colors duration-200"
+                        value={firstName}
+                        onChange={(e) => setFirstName(e.target.value)}
+                        required
+                        autoComplete="given-name"
                       />
                     </div>
                     <div className="space-y-2">
                       <label className="text-sm font-medium text-foreground">
                         Last Name *
                       </label>
-                      <Input 
+                      <Input
                         placeholder="Enter your last name"
                         className="h-12 border-border/50 focus:border-primary transition-colors duration-200"
+                        value={lastName}
+                        onChange={(e) => setLastName(e.target.value)}
+                        required
+                        autoComplete="family-name"
                       />
                     </div>
                   </div>
@@ -118,20 +201,27 @@ const Contact = () => {
                       <label className="text-sm font-medium text-foreground">
                         Email Address *
                       </label>
-                      <Input 
+                      <Input
                         type="email"
                         placeholder="Enter your email"
                         className="h-12 border-border/50 focus:border-primary transition-colors duration-200"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
+                        autoComplete="email"
                       />
                     </div>
                     <div className="space-y-2">
                       <label className="text-sm font-medium text-foreground">
                         Phone Number
                       </label>
-                      <Input 
+                      <Input
                         type="tel"
                         placeholder="Enter your phone number"
                         className="h-12 border-border/50 focus:border-primary transition-colors duration-200"
+                        value={phone}
+                        onChange={(e) => setPhone(e.target.value)}
+                        autoComplete="tel"
                       />
                     </div>
                   </div>
@@ -140,8 +230,13 @@ const Contact = () => {
                     <label className="text-sm font-medium text-foreground">
                       Subject *
                     </label>
-                    <select className="w-full h-12 px-3 rounded-md border border-border/50 bg-background focus:border-primary focus:outline-none transition-colors duration-200">
-                      <option>Select a subject</option>
+                    <select
+                      className="w-full h-12 px-3 rounded-md border border-border/50 bg-background focus:border-primary focus:outline-none transition-colors duration-200"
+                      value={subject}
+                      onChange={(e) => setSubject(e.target.value)}
+                      required
+                    >
+                      <option value="">Select a subject</option>
                       <option>Buying a Property</option>
                       <option>Selling a Property</option>
                       <option>Property Management</option>
@@ -154,30 +249,46 @@ const Contact = () => {
                     <label className="text-sm font-medium text-foreground">
                       Message *
                     </label>
-                    <Textarea 
+                    <Textarea
                       placeholder="Tell us about your real estate needs..."
                       className="min-h-32 border-border/50 focus:border-primary transition-colors duration-200 resize-none"
+                      value={message}
+                      onChange={(e) => setMessage(e.target.value)}
+                      required
                     />
                   </div>
 
-                  <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4">
-                    <Button 
+                  <div className="flex w-1/2 flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4">
+                    <Button
                       type="submit"
                       size="lg"
-                      className="flex-1 h-12 bg-gradient-primary hover:bg-primary-dark transition-all duration-200"
+                      disabled={createMutation.isPending}
+                      className="flex-1 h-12 bg-gradient-primary hover:bg-primary-dark transition-all duration-200 disabled:opacity-60"
                     >
                       <Send className="w-4 h-4 mr-2" />
-                      Send Message
+                      {createMutation.isPending ? "Sending..." : "Send Message"}
                     </Button>
-                    <Button 
+
+                    {/* <Button
                       type="button"
-                      variant="outline" 
+                      variant="outline"
                       size="lg"
                       className="flex-1 h-12 border-primary text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-200"
+                      onClick={() => {
+                        // Example action: open dialer or calendar
+                        window.open("tel:+918792455231");
+                      }}
                     >
                       Schedule a Call
-                    </Button>
+                    </Button> */}
                   </div>
+
+                  {/* Inline error (in addition to toast) */}
+                  {createMutation.isError && (
+                    <p className="text-destructive text-sm mt-2">
+                      {(createMutation.error as any)?.message || "Failed to send message."}
+                    </p>
+                  )}
                 </form>
               </CardContent>
             </Card>

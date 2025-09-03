@@ -2,15 +2,15 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Menu, X, Home, Search, User, Phone } from "lucide-react";
 
-const Header = () => {
+const Header2 = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const navItems = [
-    { name: "Home", href: "#home", icon: Home },
-    { name: "Projects", href: "#properties", icon: Search },
-    { name: "About", href: "#about", icon: User },
-    { name: "Contact", href: "#contact", icon: Phone },
-  ];
+//   const navItems = [
+//     { name: "Home", href: "#home", icon: Home },
+//     { name: "Properties", href: "#properties", icon: Search },
+//     { name: "About", href: "#about", icon: User },
+//     { name: "Contact", href: "#contact", icon: Phone },
+//   ];
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-md border-b border-border shadow-sm">
@@ -21,15 +21,14 @@ const Header = () => {
             <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center">
               <Home className="w-5 h-5 text-primary-foreground" />
             </div>
-            {/* Changed font here */}
-          <span className="text-xl Beloved Sans sans-serif text-foreground tracking-wide">
+         <span className="text-xl font-raleway font-bold text-foreground tracking-widest uppercase">
   Sitrus Projects
 </span>
 
           </div>
 
-          {/* Desktop Navigation (centered) */}
-          <nav className="hidden md:flex items-center absolute left-1/2 transform -translate-x-1/2 space-x-8">
+          {/* Desktop Navigation */}
+          {/* <nav className="hidden md:flex items-center space-x-8">
             {navItems.map((item) => (
               <a
                 key={item.name}
@@ -39,7 +38,10 @@ const Header = () => {
                 {item.name}
               </a>
             ))}
-          </nav>
+          </nav> */}
+
+          {/* CTA Button */}
+        
 
           {/* Mobile Menu Button */}
           <button
@@ -54,29 +56,22 @@ const Header = () => {
           </button>
         </div>
 
-        {/* Mobile Navigation (centered) */}
+        {/* Mobile Navigation */}
         {isMenuOpen && (
           <div className="md:hidden py-4 border-t border-border bg-background/95 backdrop-blur-md animate-fade-in">
-            <nav className="flex flex-col items-center space-y-4">
+            <nav className="flex flex-col space-y-4">
               {navItems.map((item) => (
                 <a
                   key={item.name}
                   href={item.href}
-                  className="flex items-center space-x-3 px-4 py-2 text-muted-foreground hover:text-primary hover:bg-muted rounded-lg transition-all duration-200 w-full justify-center"
+                  className="flex items-center space-x-3 px-4 py-2 text-muted-foreground hover:text-primary hover:bg-muted rounded-lg transition-all duration-200"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   <item.icon className="w-5 h-5" />
                   <span className="font-medium">{item.name}</span>
                 </a>
               ))}
-              <div className="flex flex-col space-y-2 px-4 pt-4 border-t border-border w-full">
-                <Button variant="outline" size="sm">
-                  Sign In
-                </Button>
-                <Button className="bg-gradient-primary hover:bg-primary-dark transition-all duration-200">
-                  Get Started
-                </Button>
-              </div>
+           
             </nav>
           </div>
         )}
@@ -85,4 +80,4 @@ const Header = () => {
   );
 };
 
-export default Header;
+export default Header2;

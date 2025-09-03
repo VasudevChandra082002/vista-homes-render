@@ -7,23 +7,23 @@ const About = () => {
   const services = [
     {
       icon: Home,
-      title: "Property Sales",
-      description: "Expert guidance through the entire buying and selling process with market insights.",
+      title: "Land Development",
+      description: "End-to-end transformation of raw land into planned residential layouts with roads, utilities, and approvals.",
     },
     {
       icon: TrendingUp,
-      title: "Investment Advisory",
-      description: "Strategic investment advice to maximize your real estate portfolio returns.",
+      title: "Plotted Communities",
+      description: "RERA-approved plotted developments with infrastructure like roads, drainage, lighting, and landscaped parks",
     },
     {
       icon: Shield,
-      title: "Property Management",
-      description: "Comprehensive property management services to protect and grow your investment.",
+      title: "Approvals & Compliance",
+      description: "Complete support for RERA, BDA, BMRDA, and CUDA approvals with transparent documentation.",
     },
     {
       icon: Clock,
-      title: "24/7 Support",
-      description: "Round-the-clock customer support for all your real estate needs and queries.",
+      title: "Customer  Support",
+      description: "Guidance from site visits to registration and after-sales services, ensuring a smooth property journey",
     },
   ];
 
@@ -31,12 +31,12 @@ const About = () => {
     {
       icon: Award,
       title: "Industry Awards",
-      description: "Recognized as the leading real estate agency for 3 consecutive years.",
+      description: "On-time delivery across multiple phases in Chikkaballapur & Nandi Hills region",
     },
     {
       icon: Users,
       title: "Expert Team",
-      description: "Over 50 certified real estate professionals with decades of experience.",
+      description: "Civil, planning & MEP specialists with global PMO practices",
     },
   ];
 
@@ -46,16 +46,15 @@ const About = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           {/* Content Side */}
           <div className="animate-fade-in">
-            <Badge className="mb-4 bg-accent/10 text-accent border-accent/20">
-              About PrimeEstate
-            </Badge>
+            {/* <Badge className="mb-4 bg-accent/10 text-accent border-accent/20">
+              About Sitrus Projects
+            </Badge> */}
             <h2 className="text-3xl md:text-5xl font-playfair font-bold text-foreground mb-6">
               Your Trusted Partner in
               <span className="text-primary block">Real Estate Excellence</span>
             </h2>
             <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
-              For over 15 years, PrimeEstate has been connecting dreams with reality in the world of real estate. 
-              We specialize in luxury properties, investment opportunities, and helping families find their perfect homes.
+             For over 15 years, Sitrus Projects has been shaping dream communities across Karnataka. We specialize in plotted developments, premium villas, and gated communities—offering buyers transparent titles, approved layouts, and on-time project delivery.
             </p>
             
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">

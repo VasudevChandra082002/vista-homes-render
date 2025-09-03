@@ -1,89 +1,84 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Raleway:wght@400;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Real Estate Design System - Professional & Modern */
 
 @layer base {
   :root {
-    /* Core Brand Colors */
-    --background: 0 0% 100%;
-    --foreground: 215 25% 27%;
+    --background: 0 0% 0%;  
+    --foreground: 0 0% 100%;
     
-    /* Professional Blue Theme */
-    --primary: 217 91% 60%;
+    --primary: 265 84% 62%;
     --primary-foreground: 0 0% 100%;
-    --primary-light: 217 91% 70%;
-    --primary-dark: 217 91% 50%;
-    
-    /* Luxury Gold Accents */
+    --primary-light: 265 84% 72%;
+    --primary-dark: 265 84% 52%;
     --accent: 45 93% 47%;
-    --accent-foreground: 0 0% 100%;
+    --accent-foreground: 0 0% 0%;
     --accent-light: 45 93% 57%;
-    --accent-muted: 45 93% 95%;
+    --accent-muted: 45 93% 20%;
     
-    /* Sophisticated Grays */
-    --secondary: 215 16% 47%;
+    --secondary: 0 0% 60%;
     --secondary-foreground: 0 0% 100%;
-    --muted: 217 10% 97%;
-    --muted-foreground: 215 16% 47%;
+    --muted: 0 0% 10%;
+    --muted-foreground: 0 0% 80%;
     
-    /* Card & Surface Colors */
-    --card: 0 0% 100%;
-    --card-foreground: 215 25% 27%;
-    --card-hover: 217 32% 97%;
+    --card: 0 0% 7%;
+    --card-foreground: 0 0% 100%;
+    --card-hover: 0 0% 12%;
     
-    /* Utility Colors */
-    --border: 217 10% 90%;
-    --input: 217 10% 95%;
-    --ring: 217 91% 60%;
+    --border: 0 0% 20%;
+    --input: 0 0% 15%;
+    --ring: 265 84% 62%;
     --success: 142 76% 36%;
     --warning: 45 93% 47%;
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
     
-    /* Popover Colors */
-    --popover: 0 0% 100%;
-    --popover-foreground: 215 25% 27%;
+    --popover: 0 0% 7%;
+    --popover-foreground: 0 0% 100%;
     
-    /* Design System Values */
     --radius: 0.75rem;
     
-    /* Beautiful Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-light)));
+    --gradient-primary: linear-gradient(135deg, hsl(var(--primary-dark)), hsl(var(--primary)));
     --gradient-accent: linear-gradient(135deg, hsl(var(--accent)), hsl(var(--accent-light)));
-    --gradient-hero: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary-dark)) 100%);
-    --gradient-card: linear-gradient(145deg, hsl(var(--card)) 0%, hsl(var(--muted)) 100%);
+    --gradient-hero: linear-gradient(135deg, hsl(var(--background)), hsl(var(--primary-dark)));
+    --gradient-card: linear-gradient(145deg, hsl(var(--card)), hsl(var(--muted)));
     
-    /* Professional Shadows */
-    --shadow-sm: 0 2px 4px -1px hsl(var(--primary) / 0.1);
-    --shadow-md: 0 8px 25px -5px hsl(var(--primary) / 0.15);
-    --shadow-lg: 0 20px 40px -12px hsl(var(--primary) / 0.25);
-    --shadow-card: 0 4px 20px -2px hsl(var(--primary) / 0.1);
-    --shadow-accent: 0 8px 30px -8px hsl(var(--accent) / 0.3);
+    --shadow-sm: 0 2px 4px -1px hsl(var(--primary) / 0.25);
+    --shadow-md: 0 8px 25px -5px hsl(var(--primary) / 0.3);
+    --shadow-lg: 0 20px 40px -12px hsl(var(--primary) / 0.4);
+    --shadow-card: 0 4px 20px -2px hsl(var(--primary) / 0.2);
+    --shadow-accent: 0 8px 30px -8px hsl(var(--accent) / 0.4);
     
-    /* Smooth Transitions */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-bounce: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 
-    --sidebar-background: 0 0% 98%;
-
-    --sidebar-foreground: 240 5.3% 26.1%;
-
-    --sidebar-primary: 240 5.9% 10%;
-
-    --sidebar-primary-foreground: 0 0% 98%;
-
-    --sidebar-accent: 240 4.8% 95.9%;
-
-    --sidebar-accent-foreground: 240 5.9% 10%;
-
-    --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-background: 0 0% 5%;
+    --sidebar-foreground: 0 0% 90%;
+    --sidebar-primary: 265 84% 62%;
+    --sidebar-primary-foreground: 0 0% 0%;
+    --sidebar-accent: 0 0% 15%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 0 0% 20%;
+    --sidebar-ring: 265 84% 62%;
   }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground font-inter antialiased;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-playfair;
+  }
+}
+
 
   .dark {
     --background: 222.2 84% 4.9%;
@@ -122,7 +117,6 @@
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
-}
 
 @layer base {
   * {
@@ -139,7 +133,6 @@
 }
 
 @layer components {
-  /* Professional Animations */
   .animate-fade-in {
     animation: fadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1);
   }
@@ -152,7 +145,6 @@
     animation: scaleIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   }
   
-  /* Hover Effects */
   .hover-lift {
     transition: var(--transition-smooth);
   }
@@ -170,7 +162,6 @@
     transform: scale(1.02);
   }
   
-  /* Custom Gradients */
   .bg-gradient-primary {
     background: var(--gradient-primary);
   }
@@ -187,7 +178,6 @@
     background: var(--gradient-card);
   }
   
-  /* Professional Shadows */
   .shadow-card {
     box-shadow: var(--shadow-card);
   }
@@ -229,3 +219,11 @@
     transform: scale(1);
   }
 }
+
+@font-face {
+  font-family: 'Beloved Sans';
+  src: url('/fonts/BelovedSans-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+}
+

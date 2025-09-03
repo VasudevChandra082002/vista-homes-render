@@ -18,23 +18,13 @@ const Footer = () => {
   const quickLinks = [
     { name: "Properties", href: "#properties" },
     { name: "About Us", href: "#about" },
-    { name: "Services", href: "#services" },
+
     { name: "Contact", href: "#contact" },
   ];
 
-  const services = [
-    { name: "Residential Sales", href: "#" },
-    { name: "Commercial Properties", href: "#" },
-    { name: "Property Management", href: "#" },
-    { name: "Investment Advisory", href: "#" },
-  ];
+  
 
-  const resources = [
-    { name: "Market Reports", href: "#" },
-    { name: "Mortgage Calculator", href: "#" },
-    { name: "Buying Guide", href: "#" },
-    { name: "Selling Tips", href: "#" },
-  ];
+ 
 
   const socialLinks = [
     { name: "Facebook", icon: Facebook, href: "#", color: "hover:text-blue-600" },
@@ -51,7 +41,7 @@ const Footer = () => {
     <footer className="bg-primary text-primary-foreground">
       {/* Main Footer Content */}
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
           {/* Company Info */}
           <div className="lg:col-span-1">
             <div className="flex items-center space-x-2 mb-6">
@@ -59,26 +49,26 @@ const Footer = () => {
                 <Home className="w-5 h-5 text-accent-foreground" />
               </div>
               <span className="text-xl font-playfair font-bold">
-                PrimeEstate
+                Sitrus Projects
               </span>
             </div>
             <p className="text-primary-foreground/80 mb-6 leading-relaxed">
-              Your trusted partner in real estate for over 15 years. We help you find your dream home and make smart property investments.
-            </p>
+            For over 15 years, Sitrus Projects has been shaping dream communities across Karnataka. We specialize in plotted developments, premium villas, and gated communities—offering buyers transparent titles, approved layouts, and on-time project delivery.
+               </p>
             
             {/* Contact Info */}
             <div className="space-y-3">
               <div className="flex items-center space-x-3">
                 <Phone className="w-4 h-4 text-accent" />
-                <span className="text-sm">+1 (555) 123-4567</span>
+                <span className="text-sm">+919686102055</span>
               </div>
               <div className="flex items-center space-x-3">
                 <Mail className="w-4 h-4 text-accent" />
-                <span className="text-sm">info@primeestate.com</span>
+                <span className="text-sm">info@sitrusgroup.com</span>
               </div>
               <div className="flex items-center space-x-3">
                 <MapPin className="w-4 h-4 text-accent" />
-                <span className="text-sm">123 Real Estate Blvd, Downtown, NY</span>
+                <span className="text-sm">Vasavi Complex, 147, Seshadripuram Main Rd, Sripuram, Kumara Park West, Seshadripuram, Bengaluru, Karnataka 560020, India</span>
               </div>
             </div>
           </div>
@@ -102,39 +92,14 @@ const Footer = () => {
 
           {/* Services */}
           <div>
-            <h3 className="text-lg font-semibold mb-6">Our Services</h3>
-            <ul className="space-y-3">
-              {services.map((service, index) => (
-                <li key={index}>
-                  <a 
-                    href={service.href}
-                    className="text-primary-foreground/80 hover:text-accent transition-colors duration-200"
-                  >
-                    {service.name}
-                  </a>
-                </li>
-              ))}
-            </ul>
+         
           </div>
 
           {/* Resources & Newsletter */}
           <div>
-            <h3 className="text-lg font-semibold mb-6">Resources</h3>
-            <ul className="space-y-3 mb-6">
-              {resources.map((resource, index) => (
-                <li key={index}>
-                  <a 
-                    href={resource.href}
-                    className="text-primary-foreground/80 hover:text-accent transition-colors duration-200"
-                  >
-                    {resource.name}
-                  </a>
-                </li>
-              ))}
-            </ul>
-
+         
             {/* Newsletter Signup */}
-            <div>
+            {/* <div>
               <h4 className="font-medium mb-3">Stay Updated</h4>
               <p className="text-sm text-primary-foreground/80 mb-3">
                 Get the latest market insights and property listings.
@@ -149,7 +114,7 @@ const Footer = () => {
                   Subscribe
                 </button>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
@@ -161,9 +126,9 @@ const Footer = () => {
         <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
           {/* Copyright */}
           <div className="text-sm text-primary-foreground/80">
-            © {currentYear} PrimeEstate. All rights reserved. | 
-            <a href="#" className="hover:text-accent transition-colors duration-200 ml-1">Privacy Policy</a> | 
-            <a href="#" className="hover:text-accent transition-colors duration-200 ml-1">Terms of Service</a>
+            © {currentYear} Sitrus Projects. All rights reserved. 
+            {/* <a href="#" className="hover:text-accent transition-colors duration-200 ml-1">Privacy Policy</a> | 
+            <a href="#" className="hover:text-accent transition-colors duration-200 ml-1">Terms of Service</a> */}
           </div>
 
           {/* Social Links */}
@@ -192,22 +157,7 @@ const Footer = () => {
         </div>
       </div>
 
-      {/* Professional Badges */}
-      <div className="bg-primary-dark py-4">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-wrap justify-center items-center space-x-6">
-            <Badge variant="outline" className="border-primary-foreground/30 text-primary-foreground/80">
-              Licensed Real Estate Agency
-            </Badge>
-            <Badge variant="outline" className="border-primary-foreground/30 text-primary-foreground/80">
-              MLS Member
-            </Badge>
-            <Badge variant="outline" className="border-primary-foreground/30 text-primary-foreground/80">
-              Equal Housing Opportunity
-            </Badge>
-          </div>
-        </div>
-      </div>
+  
     </footer>
   );
 };
