@@ -22,7 +22,7 @@ const Header = () => {
               <Home className="w-5 h-5 text-primary-foreground" />
             </div>
             {/* Changed font here */}
-          <span className="text-xl Beloved Sans sans-serif text-foreground tracking-wide">
+          <span className="text-xl font-raleway sans-serif text-foreground tracking-wide">
   Sitrus Projects
 </span>
 
