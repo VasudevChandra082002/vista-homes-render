@@ -2,8 +2,8 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { Plus, Upload, Edit3, Trash2, X } from "lucide-react";
-
+import { Plus, Upload, X } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import {
   createProperty as apiCreateProperty,
   getAllProperties,
@@ -12,8 +12,7 @@ import {
   deletePropertyById,
 } from "@/api/propertyApi";
 
-// import { uploadFilesToFirebase, UploadProgress } from "@/lib/upload";
-import { uploadFilesToFirebase } from "@/lib/upload";
+import { uploadFilesToFirebase, UploadProgressMap } from "@/lib/upload";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -27,38 +26,44 @@ type Property = {
   title: string;
   location: string;
   price: number;
-  features: string[];
+  features: string;
   status: "completed" | "ongoing" | "upcoming";
   createdAt?: string;
   updatedAt?: string;
+  amenities?: string[] | string; // NEW
 };
 
-const ALLOWED_TYPES = [
-  "villa",
-  "house",
-  "penthouse",
-  "apartment",
-  "studio",
-  "townhouse",
-  "bungalow",
-  "land",
-  "commercial",
-  "arena_sports",
-] as const;
+const ALLOWED_TYPES = ["Villa", "Commercial", "Land"] as const;
 
-const STATUS = ["completed", "ongoing", "upcoming"] as const;
+const STATUS = ["completed", "ongoing"] as const;
+
+// -------- NEW: tiny built-in paginator so we don't render 100s of thumbnails
+const PAGE_SIZE = 20;
 
 type FormState = {
-  images: string[];   // existing download URLs
-  newFiles: File[];   // files to upload
+  images: string[];
+  newFiles: File[];
   type: string;
   title: string;
   location: string;
-  price: string;      // keep as string for safe input binding
-  featuresText: string; // comma-separated features
+  price: string;
+  features: string;
   status: string;
+  amenities: string[]; // NEW
 };
-
+const AMENITY_OPTIONS = [
+  "Swimming Pool",
+  "Gym",
+  "Kids Play Area",
+  // "Sports Court",
+  // "Clubhouse",
+  // "Power Backup",
+  // "Covered Parking",
+  // "Lift",
+  // "Garden",
+  // "Security",
+  // "Wi-Fi",
+]; // NEW
 const defaultForm: FormState = {
   images: [],
   newFiles: [],
@@ -66,12 +71,14 @@ const defaultForm: FormState = {
   title: "",
   location: "",
   price: "",
-  featuresText: "",
+  features: "",
   status: "",
+  amenities: [], // NEW
 };
 
-const unwrapList = (res: any): Property[] => res?.data?.data ?? res?.data ?? res ?? [];
-const unwrapOne  = (res: any): Property   => res?.data?.data ?? res?.data ?? res;
+const unwrapList = (res: any): Property[] =>
+  res?.data?.data ?? res?.data ?? res ?? [];
+const unwrapOne = (res: any): Property => res?.data?.data ?? res?.data ?? res;
 
 const PropertyPage: React.FC = () => {
   const qc = useQueryClient();
@@ -87,6 +94,19 @@ const PropertyPage: React.FC = () => {
     [data]
   );
 
+  // -------- Pagination state
+  const [page, setPage] = useState(1);
+  const totalPages = Math.max(1, Math.ceil(properties.length / PAGE_SIZE));
+  useEffect(() => {
+    // clamp page when data changes
+    setPage((p) => Math.min(Math.max(1, p), totalPages));
+  }, [totalPages]);
+
+  const paged = useMemo(() => {
+    const start = (page - 1) * PAGE_SIZE;
+    return properties.slice(start, start + PAGE_SIZE);
+  }, [properties, page]);
+
   // ===== UI State =====
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editing, setEditing] = useState<Property | null>(null);
@@ -94,38 +114,75 @@ const PropertyPage: React.FC = () => {
 
   const [form, setForm] = useState<FormState>(defaultForm);
   const [uploading, setUploading] = useState(false);
-  const [progress, setProgress] = useState<UploadProgress>({});
+  const [progress, setProgress] = useState<UploadProgressMap>({});
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   // Prime form from editing doc
-  useEffect(() => {
-    if (editing) {
-      setForm({
-        images: editing.images || [],
-        newFiles: [],
-        type: editing.type || "",
-        title: editing.title || "",
-        location: editing.location || "",
-        price: editing.price != null ? String(editing.price) : "",
-        featuresText: (editing.features || []).join(", "),
-        status: editing.status || "",
-      });
-    } else {
-      setForm(defaultForm);
-    }
-  }, [editing, isFormOpen]);
+ // Prime form from editing doc
+useEffect(() => {
+  if (editing) {
+    const toAmenityArray = (val: unknown): string[] => {
+      if (Array.isArray(val)) return val.filter(Boolean).map(String);
+      if (typeof val === 'string' && val.trim()) {
+        // split common separators if old data was stored as string
+        return val.split(/[,\n;|]/).map(s => s.trim()).filter(Boolean);
+      }
+      return [];
+    };
 
-  const parseFeatures = (text: string) =>
-    text.split(",").map(s => s.trim()).filter(Boolean);
+    // Convert type to capitalized form for the UI
+    const formatTypeForUI = (type: string): string => {
+      if (!type) return '';
+      return type.charAt(0).toUpperCase() + type.slice(1);
+    };
+
+    setForm({
+      images: editing.images || [],
+      newFiles: [],
+      type: formatTypeForUI(editing.type || ""), // FIXED: Convert to capitalized form
+      title: editing.title || "",
+      location: editing.location || "",
+      price: editing.price != null ? String(editing.price) : "",
+      features: editing.features || "",
+      status: editing.status || "",
+      amenities: toAmenityArray(editing.amenities),
+    });
+  } else {
+    setForm(defaultForm);
+  }
+}, [editing, isFormOpen]);
+
+  const toggleAmenity = (name: string) => {
+    setForm((prev) => {
+      const exists = prev.amenities.includes(name);
+      return {
+        ...prev,
+        amenities: exists
+          ? prev.amenities.filter((a) => a !== name)
+          : [...prev.amenities, name],
+      };
+    });
+  };
+
+  // Convert comma-separated features to space-separated string for backend
+  const formatFeaturesForBackend = (text: string) =>
+    text
+      .split(",")
+      .map((s) => s.trim())
+      .filter(Boolean)
+      .join(" ");
 
   const validateForm = () => {
     if (!form.type) return "Please select a property type.";
-    if (!(ALLOWED_TYPES as readonly string[]).includes(form.type)) return "Invalid property type.";
+    if (!(ALLOWED_TYPES as readonly string[]).includes(form.type))
+      return "Invalid property type.";
     if (!form.status) return "Please select a status.";
-    if (!(STATUS as readonly string[]).includes(form.status)) return "Invalid status.";
+    if (!(STATUS as readonly string[]).includes(form.status))
+      return "Invalid status.";
     if (!form.title.trim()) return "Title is required.";
     if (!form.location.trim()) return "Location is required.";
-    if (form.price === "" || isNaN(Number(form.price))) return "Price must be a valid number.";
+    if (form.price === "" || isNaN(Number(form.price)))
+      return "Price must be a valid number.";
     return null;
   };
 
@@ -135,24 +192,28 @@ const PropertyPage: React.FC = () => {
       const err = validateForm();
       if (err) throw new Error(err);
 
-  setUploading(true);
-const newUrls = form.newFiles.length > 0
-  ? await uploadFilesToFirebase(form.newFiles, "properties")
-  : [];
-  console.log("Url",newUrls);
-setUploading(false);
+      setUploading(true);
+      setProgress({});
+      const newUrls =
+        form.newFiles.length > 0
+          ? await uploadFilesToFirebase(form.newFiles, {
+              path: "properties",
+              onProgress: (name, pct) =>
+                setProgress((prev) => ({ ...prev, [name]: pct })),
+            })
+          : [];
+      setUploading(false);
 
       const payload = {
         images: [...form.images, ...newUrls],
-        type: form.type,
+        type: form.type.toLowerCase(), // NEW (maps "Villa" -> "villa" for backend enum)
         title: form.title.trim(),
         location: form.location.trim(),
         price: Number(form.price),
-        features: parseFeatures(form.featuresText),
+        features: form.features.trim(),
         status: form.status as any,
+        amenities: form.amenities, // NEW
       };
-
-      console.log("Payload",payload);
       const res = await apiCreateProperty(payload);
       return unwrapOne(res);
     },
@@ -164,7 +225,9 @@ setUploading(false);
       setProgress({});
     },
     onError: (e: any) => {
-      toast.error(e?.response?.data?.error || e?.message || "Failed to create property.");
+      toast.error(
+        e?.response?.data?.error || e?.message || "Failed to create property."
+      );
     },
   });
 
@@ -175,17 +238,26 @@ setUploading(false);
       if (err) throw new Error(err);
 
       setUploading(true);
-      const newUrls = await uploadFilesToFirebase(form.newFiles, setProgress, "properties");
+      setProgress({});
+      const newUrls =
+        form.newFiles.length > 0
+          ? await uploadFilesToFirebase(form.newFiles, {
+              path: "properties",
+              onProgress: (name, pct) =>
+                setProgress((prev) => ({ ...prev, [name]: pct })),
+            })
+          : [];
       setUploading(false);
 
       const payload = {
         images: [...form.images, ...newUrls],
-        type: form.type,
+        type: form.type.toLowerCase(), // NEW
         title: form.title.trim(),
         location: form.location.trim(),
         price: Number(form.price),
-        features: parseFeatures(form.featuresText),
+        features: form.features.trim(),
         status: form.status as any,
+        amenities: form.amenities, // NEW
       };
       const res = await apiUpdateProperty(editing._id, payload);
       return unwrapOne(res);
@@ -198,7 +270,9 @@ setUploading(false);
       setProgress({});
     },
     onError: (e: any) => {
-      toast.error(e?.response?.data?.error || e?.message || "Failed to update property.");
+      toast.error(
+        e?.response?.data?.error || e?.message || "Failed to update property."
+      );
     },
   });
 
@@ -214,7 +288,9 @@ setUploading(false);
       setDeleting(null);
     },
     onError: (e: any) => {
-      toast.error(e?.response?.data?.error || e?.message || "Failed to delete property.");
+      toast.error(
+        e?.response?.data?.error || e?.message || "Failed to delete property."
+      );
     },
   });
 
@@ -222,15 +298,21 @@ setUploading(false);
   const onPickFiles = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
     if (!files.length) return;
-    setForm(prev => ({ ...prev, newFiles: [...prev.newFiles, ...files] }));
+    setForm((prev) => ({ ...prev, newFiles: [...prev.newFiles, ...files] }));
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
   const removeNewFile = (name: string) =>
-    setForm(prev => ({ ...prev, newFiles: prev.newFiles.filter(f => f.name !== name) }));
+    setForm((prev) => ({
+      ...prev,
+      newFiles: prev.newFiles.filter((f) => f.name !== name),
+    }));
 
   const removeImageUrl = (url: string) =>
-    setForm(prev => ({ ...prev, images: prev.images.filter(u => u !== url) }));
+    setForm((prev) => ({
+      ...prev,
+      images: prev.images.filter((u) => u !== url),
+    }));
 
   const openCreate = () => {
     setEditing(null);
@@ -239,7 +321,6 @@ setUploading(false);
   };
 
   const openEdit = async (p: Property) => {
-    // try to hydrate with latest data
     try {
       const res = await getPropertyById(p._id);
       const doc = unwrapOne(res) as Property;
@@ -263,8 +344,9 @@ setUploading(false);
         </div>
         <Button
           onClick={openCreate}
-          className="bg-gradient-primary text-primary-foreground shadow-card hover-lift"
-        >
+          variant="outline"
+        className="inline-flex items-center justify-center px-6 py-3 border border-primary text-primary rounded-lg font-medium hover:bg-primary hover:text-primary-foreground transition-all duration-200"
+              >
           <Plus className="w-4 h-4 mr-2" /> Add Property
         </Button>
       </div>
@@ -281,11 +363,19 @@ setUploading(false);
             </div>
           )}
           {!isLoading && !isError && properties.length === 0 && (
-            <div className="p-6 text-muted-foreground">No properties found.</div>
+            <div className="p-6 text-muted-foreground">
+              No properties found.
+            </div>
           )}
 
           {!isLoading && !isError && properties.length > 0 && (
-            <div className="overflow-x-auto">
+            <div
+              className="overflow-x-auto"
+              style={{
+                contentVisibility: "auto",
+                containIntrinsicSize: "1200px",
+              }}
+            >
               <table className="min-w-full text-sm">
                 <thead>
                   <tr className="text-left text-muted-foreground border-b">
@@ -294,12 +384,13 @@ setUploading(false);
                     <th className="py-3 px-4">Status</th>
                     <th className="py-3 px-4">Price</th>
                     <th className="py-3 px-4">Location</th>
+                    <th className="py-3 px-4">Amenities</th>
                     <th className="py-3 px-4">Images</th>
                     <th className="py-3 px-4 w-44">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {properties.map((p) => (
+                  {paged.map((p) => (
                     <tr key={p._id} className="border-b last:border-b-0">
                       <td className="py-3 px-4">
                         <div className="flex items-center gap-3">
@@ -308,6 +399,11 @@ setUploading(false);
                               <img
                                 src={p.images[0]}
                                 alt={p.title}
+                                width={64}
+                                height={48}
+                                loading="lazy"
+                                decoding="async"
+                                fetchPriority="low"
                                 className="w-full h-full object-cover"
                               />
                             ) : null}
@@ -315,20 +411,51 @@ setUploading(false);
                           <div>
                             <div className="font-medium">{p.title}</div>
                             <div className="text-xs text-muted-foreground">
-                              {new Date(p.createdAt || "").toLocaleDateString()}
+                              {p.createdAt
+                                ? new Date(p.createdAt).toLocaleDateString()
+                                : "-"}
                             </div>
                           </div>
                         </div>
                       </td>
                       <td className="py-3 px-4 capitalize">{p.type}</td>
                       <td className="py-3 px-4 capitalize">{p.status}</td>
-                      <td className="py-3 px-4">₹{(p.price ?? 0).toLocaleString()}</td>
+                      <td className="py-3 px-4">
+                        ₹{(p.price ?? 0).toLocaleString()}
+                      </td>
                       <td className="py-3 px-4">{p.location}</td>
+                      <td className="py-3 px-4">
+                        {Array.isArray(p.amenities) &&
+                        p.amenities.length > 0 ? (
+                          <div className="flex flex-wrap gap-1">
+                            {p.amenities.slice(0, 2).map((a, i) => (
+                              <Badge
+                                key={i}
+                                variant="secondary"
+                                className="text-xs"
+                              >
+                                {a}
+                              </Badge>
+                            ))}
+                            {p.amenities.length > 2 && (
+                              <Badge variant="outline" className="text-xs">
+                                +{p.amenities.length - 2} more
+                              </Badge>
+                            )}
+                          </div>
+                        ) : (
+                          "-"
+                        )}
+                      </td>
                       <td className="py-3 px-4">{p.images?.length || 0}</td>
                       <td className="py-3 px-4">
                         <div className="flex items-center gap-2">
-                          <Button variant="outline" size="sm" onClick={() => openEdit(p)}>
-                       Edit
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => openEdit(p)}
+                          >
+                            Edit
                           </Button>
                           <Button
                             variant="destructive"
@@ -336,7 +463,7 @@ setUploading(false);
                             onClick={() => setDeleting(p)}
                             className="bg-[hsl(var(--destructive))] text-[hsl(var(--destructive-foreground))]"
                           >
-                           Delete
+                            Delete
                           </Button>
                         </div>
                       </td>
@@ -344,6 +471,36 @@ setUploading(false);
                   ))}
                 </tbody>
               </table>
+
+              {/* Pagination */}
+              {totalPages > 1 && (
+                <div className="flex items-center justify-between px-4 py-3">
+                  <div className="text-xs text-muted-foreground">
+                    Page {page} of {totalPages} • Showing {paged.length} of{" "}
+                    {properties.length}
+                  </div>
+                  <div className="flex gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setPage((p) => Math.max(1, p - 1))}
+                      disabled={page === 1}
+                    >
+                      Prev
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() =>
+                        setPage((p) => Math.min(totalPages, p + 1))
+                      }
+                      disabled={page === totalPages}
+                    >
+                      Next
+                    </Button>
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </CardContent>
@@ -379,19 +536,27 @@ setUploading(false);
               {/* Row 1 */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-medium mb-2">Title</label>
+                  <label className="block text-sm font-medium mb-2">
+                    Title
+                  </label>
                   <Input
                     value={form.title}
-                    onChange={(e) => setForm((s) => ({ ...s, title: e.target.value }))}
+                    onChange={(e) =>
+                      setForm((s) => ({ ...s, title: e.target.value }))
+                    }
                     placeholder="Luxurious 3BHK Apartment"
                     required
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-2">Location</label>
+                  <label className="block text-sm font-medium mb-2">
+                    Location
+                  </label>
                   <Input
                     value={form.location}
-                    onChange={(e) => setForm((s) => ({ ...s, location: e.target.value }))}
+                    onChange={(e) =>
+                      setForm((s) => ({ ...s, location: e.target.value }))
+                    }
                     placeholder="Indiranagar, Bengaluru"
                     required
                   />
@@ -404,7 +569,9 @@ setUploading(false);
                   <label className="block text-sm font-medium mb-2">Type</label>
                   <select
                     value={form.type}
-                    onChange={(e) => setForm((s) => ({ ...s, type: e.target.value }))}
+                    onChange={(e) =>
+                      setForm((s) => ({ ...s, type: e.target.value }))
+                    }
                     className="w-full h-11 px-3 rounded-md border border-border bg-background focus:border-primary focus:outline-none"
                     required
                   >
@@ -418,10 +585,14 @@ setUploading(false);
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium mb-2">Status</label>
+                  <label className="block text-sm font-medium mb-2">
+                    Status
+                  </label>
                   <select
                     value={form.status}
-                    onChange={(e) => setForm((s) => ({ ...s, status: e.target.value }))}
+                    onChange={(e) =>
+                      setForm((s) => ({ ...s, status: e.target.value }))
+                    }
                     className="w-full h-11 px-3 rounded-md border border-border bg-background focus:border-primary focus:outline-none"
                     required
                   >
@@ -435,26 +606,126 @@ setUploading(false);
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium mb-2">Price (₹)</label>
+                  <label className="block text-sm font-medium mb-2">
+                    Price (₹)
+                  </label>
                   <Input
                     type="number"
                     min={0}
                     value={form.price}
-                    onChange={(e) => setForm((s) => ({ ...s, price: e.target.value }))}
+                    onChange={(e) =>
+                      setForm((s) => ({ ...s, price: e.target.value }))
+                    }
                     placeholder="15000000"
                     required
                   />
                 </div>
               </div>
+              {/* Amenities (multi-select dropdown) */}
+              <div className="space-y-2">
+                <label className="block text-sm font-medium">Amenities</label>
 
+                {/* Trigger */}
+                <div className="relative inline-block w-full">
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      const el = document.getElementById("amenities-menu");
+                      if (el) el.classList.toggle("hidden");
+                    }}
+                    className="w-full h-11 px-3 rounded-md border border-border bg-background flex items-center justify-between"
+                    aria-haspopup="listbox"
+                    aria-expanded="false"
+                  >
+                    <span className="text-sm truncate">
+                      {form.amenities.length
+                        ? `${form.amenities.length} selected`
+                        : "Select amenities"}
+                    </span>
+                    <span className="text-xs text-muted-foreground">▼</span>
+                  </button>
+
+                  {/* Menu */}
+                  <div
+                    id="amenities-menu"
+                    className="hidden absolute z-50 mt-1 w-full rounded-md border bg-popover shadow-md"
+                    role="listbox"
+                  >
+                    <div className="max-h-64 overflow-auto py-2">
+                      {AMENITY_OPTIONS.map((opt) => {
+                        const checked = form.amenities.includes(opt);
+                        return (
+                          <label
+                            key={opt}
+                            className="flex items-center gap-3 px-3 py-2 cursor-pointer hover:bg-accent"
+                          >
+                            <input
+                              type="checkbox"
+                              className="h-4 w-4"
+                              checked={checked}
+                              onChange={() => toggleAmenity(opt)}
+                            />
+                            <span className="text-sm">{opt}</span>
+                          </label>
+                        );
+                      })}
+                    </div>
+                    <div className="flex justify-end gap-2 px-3 py-2 border-t">
+                      <button
+                        type="button"
+                        className="text-sm underline"
+                        onClick={() => {
+                          setForm((s) => ({ ...s, amenities: [] }));
+                        }}
+                      >
+                        Clear
+                      </button>
+                      <button
+                        type="button"
+                        className="text-sm underline"
+                        onClick={() => {
+                          const el = document.getElementById("amenities-menu");
+                          if (el) el.classList.add("hidden");
+                        }}
+                      >
+                        Done
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Selected chips */}
+                {form.amenities.length > 0 && (
+                  <div className="flex flex-wrap gap-2 mt-2">
+                    {form.amenities.map((a) => (
+                      <Badge
+                        key={a}
+                        variant="secondary"
+                        className="flex items-center gap-1"
+                      >
+                        {a}
+                        <X
+                          className="w-3 h-3 cursor-pointer"
+                          onClick={() => toggleAmenity(a)}
+                        />
+                      </Badge>
+                    ))}
+                  </div>
+                )}
+              </div>
               {/* Features */}
               <div>
-                <label className="block text-sm font-medium mb-2">Features (comma separated)</label>
+                <label className="block text-sm font-medium mb-2">
+                  Features (description)
+                </label>
                 <Textarea
-                  value={form.featuresText}
-                  onChange={(e) => setForm((s) => ({ ...s, featuresText: e.target.value }))}
-                  placeholder="Pool, Gym, Garden, 24/7 Security"
-                  rows={2}
+                  value={form.features}
+                  onChange={(e) =>
+                    setForm((s) => ({ ...s, features: e.target.value }))
+                  }
+                  placeholder="Describe the features of this property"
+                  rows={4}
                 />
               </div>
 
@@ -466,8 +737,19 @@ setUploading(false);
                 {form.images.length > 0 && (
                   <div className="flex flex-wrap gap-3">
                     {form.images.map((url) => (
-                      <div key={url} className="relative w-28 h-20 rounded-lg overflow-hidden border">
-                        <img src={url} alt="property" className="w-full h-full object-cover" />
+                      <div
+                        key={url}
+                        className="relative w-28 h-20 rounded-lg overflow-hidden border"
+                      >
+                        <img
+                          src={url}
+                          alt="property"
+                          width={112}
+                          height={80}
+                          loading="lazy"
+                          decoding="async"
+                          className="w-full h-full object-cover"
+                        />
                         <button
                           type="button"
                           onClick={() => removeImageUrl(url)}
@@ -487,8 +769,19 @@ setUploading(false);
                     {form.newFiles.map((f) => {
                       const preview = URL.createObjectURL(f);
                       return (
-                        <div key={f.name} className="relative w-28 h-20 rounded-lg overflow-hidden border">
-                          <img src={preview} alt={f.name} className="w-full h-full object-cover" />
+                        <div
+                          key={f.name}
+                          className="relative w-28 h-20 rounded-lg overflow-hidden border"
+                        >
+                          <img
+                            src={preview}
+                            alt={f.name}
+                            width={112}
+                            height={80}
+                            loading="lazy"
+                            decoding="async"
+                            className="w-full h-full object-cover"
+                          />
                           <button
                             type="button"
                             onClick={() => removeNewFile(f.name)}
@@ -556,9 +849,12 @@ setUploading(false);
                 </Button>
                 <Button
                   type="submit"
-                  disabled={createMut.isPending || updateMut.isPending || uploading}
-                  className="bg-gradient-primary text-primary-foreground shadow-card hover-lift disabled:opacity-60"
-                >
+                  disabled={
+                    createMut.isPending || updateMut.isPending || uploading
+                  }
+                  variant="outline"
+                 className="inline-flex items-center justify-center px-6 py-3 border border-primary text-primary rounded-lg font-medium hover:bg-primary hover:text-primary-foreground transition-all duration-200"
+             >
                   {uploading
                     ? "Uploading…"
                     : editing
@@ -590,7 +886,8 @@ setUploading(false);
 
             {deleteMut.isError && (
               <div className="text-destructive text-sm mt-3">
-                {(deleteMut.error as any)?.message || "Failed to delete property."}
+                {(deleteMut.error as any)?.message ||
+                  "Failed to delete property."}
               </div>
             )}
 

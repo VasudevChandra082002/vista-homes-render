@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700&display=swap');
+/* @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Raleway:wght@400;600;700&display=swap');
 
 @tailwind base;
@@ -219,4 +219,125 @@
     transform: scale(1);
   }
 }
+ */
 
+
+
+
+
+
+
+
+
+ 
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Real Estate Design System - Professional & Modern */
+@layer base {
+  :root {
+    /* Warm, sunlit base */
+    --background: 45 33% 90%;            /* warm ivory */
+    --foreground: 210 15% 15%;           /* deep charcoal for text */
+
+    /* Primary = modern moss green (plants/landscape) */
+    --primary: 142 35% 32%;
+    --primary-foreground: 0 0% 100%;
+    --primary-light: 142 35% 42%;
+    --primary-dark: 142 40% 24%;
+
+    /* Accent = sun/wood amber */
+    --accent: 34 85% 55%;
+    --accent-foreground: 0 0% 100%;
+    --accent-light: 34 85% 65%;
+    --accent-muted: 34 85% 95%;
+
+    /* Neutrals echoing façade/glass/stone */
+    --secondary: 210 10% 40%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 210 16% 96%;
+    --muted-foreground: 210 10% 40%;
+
+    /* Surfaces */
+    --card: 0 0% 100%;
+    --card-foreground: 210 15% 15%;
+    --card-hover: 45 20% 98%;
+
+    /* Borders/inputs/ring */
+    --border: 210 16% 88%;
+    --input: 210 16% 95%;
+    --ring: 142 35% 32%;
+
+    /* Status */
+    --success: 146 50% 36%;
+    --warning: 34 85% 50%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+
+    /* Popover */
+    --popover: 0 0% 100%;
+    --popover-foreground: 210 15% 15%;
+
+    /* Design tokens */
+    --radius: 0.75rem;
+
+    /* Gradients (hero leans green, hint of amber) */
+    --gradient-primary: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary-light)) 100%);
+    --gradient-accent: linear-gradient(135deg, hsl(var(--accent)) 0%, hsl(var(--accent-light)) 100%);
+    --gradient-hero: linear-gradient(135deg, hsl(var(--primary-dark)) 0%, hsl(var(--primary)) 60%, hsl(var(--accent)) 100%);
+    --gradient-card: linear-gradient(145deg, hsl(var(--card)) 0%, hsl(var(--muted)) 100%);
+
+    /* Soft, architectural shadows */
+    --shadow-sm: 0 2px 4px -1px hsl(210 10% 20% / 0.10);
+    --shadow-md: 0 8px 24px -6px hsl(210 10% 20% / 0.14);
+    --shadow-lg: 0 20px 40px -12px hsl(210 10% 20% / 0.18);
+    --shadow-card: 0 4px 18px -2px hsl(210 10% 20% / 0.12);
+    --shadow-accent: 0 8px 30px -8px hsl(34 85% 50% / 0.28);
+
+    /* Transitions */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+    /* Sidebar (if you use it) */
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 210 15% 15%;
+    --sidebar-primary: 142 35% 32%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 210 16% 96%;
+    --sidebar-accent-foreground: 210 15% 15%;
+    --sidebar-border: 210 16% 88%;
+    --sidebar-ring: 142 35% 32%;
+  }
+
+  .dark {
+    /* Keep dark mode neutral and legible */
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+
+    --card: 222.2 84% 6%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 6%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 142 35% 40%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 34 85% 55%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 142 35% 40%;
+  }
+}

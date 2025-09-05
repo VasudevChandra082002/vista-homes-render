@@ -17,6 +17,7 @@ import Static from "./pages/admin/Static";
 import ContactUs from "./pages/admin/ContactUs";
 import PropertyPage from "./pages/admin/Property";
 import PropertyDetails from "./components/PropertyDetails";
+import TeamsPage from "./pages/admin/Team";
 // import Users from "@/pages/admin/Users";
 // import Settings from "@/pages/admin/Settings";
 
@@ -43,6 +44,7 @@ const App = () => (
               <Route path="static" element={<Static />} />
               <Route path="contactus" element={<ContactUs />} />
               <Route path="properties" element={<PropertyPage />} />
+              <Route path="team" element={<TeamsPage />} />
            
         
             </Route>
