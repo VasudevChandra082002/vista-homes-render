@@ -262,9 +262,10 @@ const Contact: React.FC = () => {
                     <Button
                       type="submit"
                       size="lg"
+                      variant="outline"
                       disabled={createMutation.isPending}
-                      className="flex-1 h-12 bg-gradient-primary hover:bg-primary-dark transition-all duration-200 disabled:opacity-60"
-                    >
+                       className="inline-flex items-center justify-center px-6 py-3 border border-primary text-primary rounded-lg font-medium hover:bg-primary hover:text-primary-foreground transition-all duration-200"
+         >
                       <Send className="w-4 h-4 mr-2" />
                       {createMutation.isPending ? "Sending..." : "Send Message"}
                     </Button>

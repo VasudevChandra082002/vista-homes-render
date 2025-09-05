@@ -12,12 +12,12 @@ import {
   ArrowUp
 } from "lucide-react";
 
-const Footer = () => {
+const Footer2 = () => {
   const currentYear = new Date().getFullYear();
 
   const quickLinks = [
-    { name: "Properties", href: "#properties" },
-    { name: "About Us", href: "#about" },
+    // { name: "Properties", href: "#properties" },
+    // { name: "About Us", href: "#about" },
 
     { name: "Contact", href: "#contact" },
   ];
@@ -162,4 +162,4 @@ const Footer = () => {
   );
 };
 
-export default Footer;
+export default Footer2;

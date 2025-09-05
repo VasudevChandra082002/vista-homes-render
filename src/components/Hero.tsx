@@ -1,56 +1,59 @@
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Search, MapPin, Filter } from "lucide-react";
-import heroImage from "@/assets/hero-property.jpg";
-import imagecitrus from "@/assets/imagecitrus.jpeg";
+import rowvillas from "@/assets/rowvilla.png"; // or keep logo3 if you prefer
+import logo3 from "@/assets/logo3.jpeg";
 
 const Hero = () => {
   return (
-    <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Background Image with Overlay */}
+    <section
+      id="home"
+      // keep section from jumping under sticky header when using hash links
+      className="relative overflow-hidden scroll-mt-[92px] md:scroll-mt-[104px]"
+    >
+      {/* Background image */}
       <div className="absolute inset-0 z-0">
         <img
-          src={imagecitrus}
+          src={logo3} // change to rowvillas if needed
           alt="Luxury real estate property"
           className="w-full h-full object-cover"
+          loading="eager"
+          fetchPriority="high"
+          decoding="async"
         />
-        {/* <div className="absolute inset-0 bg-gradient-to-r from-primary/80 via-primary/60 to-transparent"></div> */}
+        {/* Subtle right-side darkening to boost text contrast */}
+        <div className="absolute inset-0 bg-gradient-to-l from-black/35 via-black/10 to-transparent pointer-events-none" />
       </div>
 
-      {/* Content */}
-      <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 pt-16">
-        <div className="max-w-4xl">
-          <div className="animate-fade-in">
-            <h1 className="text-4xl md:text-6xl lg:text-7xl font-playfair font-bold text-white leading-tight mb-6">
-               Your
-              <span className="text-accent block">Dream Home Awaits With</span>
-              Sitrus Projects
-            </h1>
-            <p className="text-xl md:text-2xl text-white/90 mb-8 max-w-2xl leading-relaxed">
-              Premium plots and villas near Nandi Hills, designed for modern living with nature at your doorstep.
-            </p>
+      {/* Content wrapper:
+         - pt-* keeps content below fixed header (h-20 md:h-24)
+         - min-h-screen keeps it full-height
+         - center on mobile, push to right on ≥sm */}
+      <div className="relative z-10 min-h-screen
+                      pt-[92px] md:pt-[104px] 
+                      container mx-auto px-4 sm:px-6 lg:px-8
+                      flex items-start  justify-center sm:justify-end">
+        <div className="max-w-[min(90vw,48rem)] text-center sm:text-right mr-0 sm:mr-4 md:mr-10 ">
+          <h1
+            className="text-3xl md:text-6xl lg:text-6xl font-playfair font-bold italic
+                       leading-[1.15] tracking-tight mb-6
+                       filter drop-shadow-[0_2px_12px_rgba(0,0,0,0.35)]"
+          >
+            <span
+              // className="inline-block
+              //            bg-gradient-to-r from-[#C68B3C] via-[#D8A960] to-[#EFD19A]
+              //            bg-clip-text text-transparent
+              //            px-[0.06em] pb-[0.06em]"
+              className="inline-block text-white px-[0.06em] pb-[0.06em]"
+            >
+              Find your perfect space
+              <br className="hidden sm:block" />
+              with Sitrus.
+            </span>
+          </h1>
+          {/* Optional CTAs
+          <div className="flex justify-center sm:justify-end gap-3">
+            <button className="bg-gradient-primary text-white px-5 py-2 rounded-lg">Explore Projects</button>
+            <button className="border border-white/60 text-white px-5 py-2 rounded-lg">Contact Us</button>
           </div>
-
-
-
-          {/* Stats */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-12 animate-scale-in">
-            {[
-              { number: "10+", label: "Projects" },
-              { number: "10K+", label: "Happy Clients" },
-              // { number: "50+", label: "Cities Covered" },
-              { number: "20", label: "Years Experience" },
-            ].map((stat, index) => (
-              <div key={index} className="text-center">
-                <div className="text-2xl md:text-3xl font-bold text-white mb-1">
-                  {stat.number}
-                </div>
-                <div className="text-white/80 text-sm md:text-base">
-                  {stat.label}
-                </div>
-              </div>
-            ))}
-          </div>
+          */}
         </div>
       </div>
     </section>

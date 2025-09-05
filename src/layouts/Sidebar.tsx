@@ -77,6 +77,11 @@ const Sidebar: React.FC = () => {
           {expanded && <span>FAQ</span>}
         </NavLink>
 
+        <NavLink to="/admin/team" className={navItemClass}>
+          <HelpCircle className="w-5 h-5" />
+          {expanded && <span>Team</span>}
+        </NavLink>
+
         <NavLink to="/admin/static" className={navItemClass}>
           <FileText className="w-5 h-5" />
           {expanded && <span>Static Pages</span>}
