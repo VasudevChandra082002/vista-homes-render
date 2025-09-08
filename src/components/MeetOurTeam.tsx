@@ -39,14 +39,14 @@ const MeetOurTeam: React.FC = () => {
   );
 
   return (
-    <section id="team" className="py-16 bg-muted/20">
+    <section id="team" className="py-16 ">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-playfair font-bold text-foreground mb-4">
             Meet Our Team
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-lg text-white max-w-2xl mx-auto">
             The passionate professionals behind our exceptional properties
           </p>
         </div>

@@ -18,6 +18,7 @@ import ContactUs from "./pages/admin/ContactUs";
 import PropertyPage from "./pages/admin/Property";
 import PropertyDetails from "./components/PropertyDetails";
 import TeamsPage from "./pages/admin/Team";
+import UserProperty from "./pages/UserProperty";
 // import Users from "@/pages/admin/Users";
 // import Settings from "@/pages/admin/Settings";
 
@@ -33,7 +34,7 @@ const App = () => (
           {/* Public routes */}
           <Route path="/" element={<Index />} />
           <Route path="/login" element={<Login />} />
-           <Route path="/property/:id" element={<PropertyDetails />} />
+           <Route path="/property/:id" element={<UserProperty />} />
 
           {/* Protected Admin routes */}
           <Route element={<ProtectedRoute />}>

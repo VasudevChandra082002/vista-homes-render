@@ -108,7 +108,7 @@ const Contact: React.FC = () => {
   };
 
   return (
-    <section id="contact" className="py-20 bg-background">
+    <section id="contact" className="py-20 ">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16 animate-fade-in">
           {/* <Badge className="mb-4 bg-accent/10 text-accent border-accent/20">
@@ -118,7 +118,7 @@ const Contact: React.FC = () => {
             Ready to Find Your
             <span className="text-primary block">Dream Property?</span>
           </h2>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-xl text-white max-w-2xl mx-auto">
             Get in touch with our expert team. We're here to guide you through every step of your real estate journey.
           </p>
         </div>
@@ -134,19 +134,19 @@ const Contact: React.FC = () => {
               >
                 <CardContent className="p-6">
                   <div className="flex items-start space-x-4">
-                    <div className="flex-shrink-0 w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center group-hover:bg-primary/20 transition-colors duration-200">
-                      <info.icon className="w-6 h-6 text-primary" />
+                    <div className="flex-shrink-0 w-12 h-12 bg-white/10 rounded-lg flex items-center justify-center group-hover:bg-primary/20 transition-colors duration-200">
+                      <info.icon className="w-6 h-6 text-white" />
                     </div>
                     <div className="flex-1">
-                      <h3 className="font-semibold text-foreground mb-1 group-hover:text-primary transition-colors duration-200">
+                      <h3 className="font-semibold text-white mb-1 group-hover:text-primary transition-colors duration-200">
                         {info.title}
                       </h3>
-                      <p className="text-sm text-muted-foreground mb-2">
+                      <p className="text-sm text-white mb-2">
                         {info.description}
                       </p>
                       <div className="space-y-1">
                         {info.details.map((detail, idx) => (
-                          <p key={idx} className="text-sm font-medium text-foreground">
+                          <p key={idx} className="text-sm font-medium text-white">
                             {detail}
                           </p>
                         ))}

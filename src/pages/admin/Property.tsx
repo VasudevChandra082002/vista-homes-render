@@ -118,39 +118,42 @@ const PropertyPage: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   // Prime form from editing doc
- // Prime form from editing doc
-useEffect(() => {
-  if (editing) {
-    const toAmenityArray = (val: unknown): string[] => {
-      if (Array.isArray(val)) return val.filter(Boolean).map(String);
-      if (typeof val === 'string' && val.trim()) {
-        // split common separators if old data was stored as string
-        return val.split(/[,\n;|]/).map(s => s.trim()).filter(Boolean);
-      }
-      return [];
-    };
+  // Prime form from editing doc
+  useEffect(() => {
+    if (editing) {
+      const toAmenityArray = (val: unknown): string[] => {
+        if (Array.isArray(val)) return val.filter(Boolean).map(String);
+        if (typeof val === "string" && val.trim()) {
+          // split common separators if old data was stored as string
+          return val
+            .split(/[,\n;|]/)
+            .map((s) => s.trim())
+            .filter(Boolean);
+        }
+        return [];
+      };
 
-    // Convert type to capitalized form for the UI
-    const formatTypeForUI = (type: string): string => {
-      if (!type) return '';
-      return type.charAt(0).toUpperCase() + type.slice(1);
-    };
+      // Convert type to capitalized form for the UI
+      const formatTypeForUI = (type: string): string => {
+        if (!type) return "";
+        return type.charAt(0).toUpperCase() + type.slice(1);
+      };
 
-    setForm({
-      images: editing.images || [],
-      newFiles: [],
-      type: formatTypeForUI(editing.type || ""), // FIXED: Convert to capitalized form
-      title: editing.title || "",
-      location: editing.location || "",
-      price: editing.price != null ? String(editing.price) : "",
-      features: editing.features || "",
-      status: editing.status || "",
-      amenities: toAmenityArray(editing.amenities),
-    });
-  } else {
-    setForm(defaultForm);
-  }
-}, [editing, isFormOpen]);
+      setForm({
+        images: editing.images || [],
+        newFiles: [],
+        type: formatTypeForUI(editing.type || ""), // FIXED: Convert to capitalized form
+        title: editing.title || "",
+        location: editing.location || "",
+        price: editing.price != null ? String(editing.price) : "",
+        features: editing.features || "",
+        status: editing.status || "",
+        amenities: toAmenityArray(editing.amenities),
+      });
+    } else {
+      setForm(defaultForm);
+    }
+  }, [editing, isFormOpen]);
 
   const toggleAmenity = (name: string) => {
     setForm((prev) => {
@@ -181,8 +184,8 @@ useEffect(() => {
       return "Invalid status.";
     if (!form.title.trim()) return "Title is required.";
     if (!form.location.trim()) return "Location is required.";
-    if (form.price === "" || isNaN(Number(form.price)))
-      return "Price must be a valid number.";
+    // if (form.price === "" || isNaN(Number(form.price)))
+    //   return "Price must be a valid number.";
     return null;
   };
 
@@ -209,7 +212,7 @@ useEffect(() => {
         type: form.type.toLowerCase(), // NEW (maps "Villa" -> "villa" for backend enum)
         title: form.title.trim(),
         location: form.location.trim(),
-        price: Number(form.price),
+        price: form.price.trim(),
         features: form.features.trim(),
         status: form.status as any,
         amenities: form.amenities, // NEW
@@ -334,19 +337,17 @@ useEffect(() => {
   // ===== Render =====
   return (
     <div className="space-y-6">
-      {/* Header */}
+    
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl md:text-3xl font-semibold">Properties</h1>
-          <p className="text-sm text-muted-foreground">
-            Create, edit, and manage properties.
-          </p>
+     
         </div>
         <Button
           onClick={openCreate}
           variant="outline"
-        className="inline-flex items-center justify-center px-6 py-3 border border-primary text-primary rounded-lg font-medium hover:bg-primary hover:text-primary-foreground transition-all duration-200"
-              >
+          className="inline-flex items-center justify-center px-6 py-3 border border-primary text-primary rounded-lg font-medium hover:bg-primary hover:text-primary-foreground transition-all duration-200"
+        >
           <Plus className="w-4 h-4 mr-2" /> Add Property
         </Button>
       </div>
@@ -420,9 +421,7 @@ useEffect(() => {
                       </td>
                       <td className="py-3 px-4 capitalize">{p.type}</td>
                       <td className="py-3 px-4 capitalize">{p.status}</td>
-                      <td className="py-3 px-4">
-                        ₹{(p.price ?? 0).toLocaleString()}
-                      </td>
+                      <td className="py-3 px-4">{p.price || "-"}</td>
                       <td className="py-3 px-4">{p.location}</td>
                       <td className="py-3 px-4">
                         {Array.isArray(p.amenities) &&
@@ -607,16 +606,15 @@ useEffect(() => {
 
                 <div>
                   <label className="block text-sm font-medium mb-2">
-                    Price (₹)
+                    Price
                   </label>
                   <Input
-                    type="number"
-                    min={0}
+                    type="text" // allow any text like "1 lakh Rs"
                     value={form.price}
                     onChange={(e) =>
                       setForm((s) => ({ ...s, price: e.target.value }))
                     }
-                    placeholder="15000000"
+                    placeholder="e.g. 1 lakh Rs"
                     required
                   />
                 </div>
@@ -853,8 +851,8 @@ useEffect(() => {
                     createMut.isPending || updateMut.isPending || uploading
                   }
                   variant="outline"
-                 className="inline-flex items-center justify-center px-6 py-3 border border-primary text-primary rounded-lg font-medium hover:bg-primary hover:text-primary-foreground transition-all duration-200"
-             >
+                  className="inline-flex items-center justify-center px-6 py-3 border border-primary text-primary rounded-lg font-medium hover:bg-primary hover:text-primary-foreground transition-all duration-200"
+                >
                   {uploading
                     ? "Uploading…"
                     : editing

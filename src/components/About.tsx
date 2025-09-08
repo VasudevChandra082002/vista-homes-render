@@ -62,7 +62,7 @@ const About = () => {
             <span className="text-primary">real estate excellence</span>
           </h2>
 
-          <p className="mt-5 text-lg text-muted-foreground leading-relaxed">
+          <p className="mt-5 text-lg text-white leading-relaxed">
             For over 15 years, Sitrus Projects has been shaping dream
             communities across Karnataka. We specialize in plotted developments,
             premium villas, and gated communities—offering buyers transparent
