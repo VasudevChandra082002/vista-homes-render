@@ -1,235 +1,4 @@
-/* @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Raleway:wght@400;600;700&display=swap');
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-
-@layer base {
-  :root {
-    --background: 0 0% 0%;  
-    --foreground: 0 0% 100%;
-    
-    --primary: 265 84% 62%;
-    --primary-foreground: 0 0% 100%;
-    --primary-light: 265 84% 72%;
-    --primary-dark: 265 84% 52%;
-    --accent: 45 93% 47%;
-    --accent-foreground: 0 0% 0%;
-    --accent-light: 45 93% 57%;
-    --accent-muted: 45 93% 20%;
-    
-    --secondary: 0 0% 60%;
-    --secondary-foreground: 0 0% 100%;
-    --muted: 0 0% 10%;
-    --muted-foreground: 0 0% 80%;
-    
-    --card: 0 0% 7%;
-    --card-foreground: 0 0% 100%;
-    --card-hover: 0 0% 12%;
-    
-    --border: 0 0% 20%;
-    --input: 0 0% 15%;
-    --ring: 265 84% 62%;
-    --success: 142 76% 36%;
-    --warning: 45 93% 47%;
-    --destructive: 0 72% 51%;
-    --destructive-foreground: 0 0% 100%;
-    
-    --popover: 0 0% 7%;
-    --popover-foreground: 0 0% 100%;
-    
-    --radius: 0.75rem;
-    
-    --gradient-primary: linear-gradient(135deg, hsl(var(--primary-dark)), hsl(var(--primary)));
-    --gradient-accent: linear-gradient(135deg, hsl(var(--accent)), hsl(var(--accent-light)));
-    --gradient-hero: linear-gradient(135deg, hsl(var(--background)), hsl(var(--primary-dark)));
-    --gradient-card: linear-gradient(145deg, hsl(var(--card)), hsl(var(--muted)));
-    
-    --shadow-sm: 0 2px 4px -1px hsl(var(--primary) / 0.25);
-    --shadow-md: 0 8px 25px -5px hsl(var(--primary) / 0.3);
-    --shadow-lg: 0 20px 40px -12px hsl(var(--primary) / 0.4);
-    --shadow-card: 0 4px 20px -2px hsl(var(--primary) / 0.2);
-    --shadow-accent: 0 8px 30px -8px hsl(var(--accent) / 0.4);
-    
-    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    --transition-bounce: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-
-    --sidebar-background: 0 0% 5%;
-    --sidebar-foreground: 0 0% 90%;
-    --sidebar-primary: 265 84% 62%;
-    --sidebar-primary-foreground: 0 0% 0%;
-    --sidebar-accent: 0 0% 15%;
-    --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 0 0% 20%;
-    --sidebar-ring: 265 84% 62%;
-  }
-}
-
-@layer base {
-  * {
-    @apply border-border;
-  }
-  body {
-    @apply bg-background text-foreground font-inter antialiased;
-  }
-  h1, h2, h3, h4, h5, h6 {
-    @apply font-playfair;
-  }
-}
-
-
-  .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
-  }
-
-@layer base {
-  * {
-    @apply border-border;
-  }
-
-  body {
-    @apply bg-background text-foreground font-inter antialiased;
-  }
-  
-  h1, h2, h3, h4, h5, h6 {
-    @apply font-playfair;
-  }
-}
-
-@layer components {
-  .animate-fade-in {
-    animation: fadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-  
-  .animate-slide-up {
-    animation: slideUp 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-  
-  .animate-scale-in {
-    animation: scaleIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  }
-  
-  .hover-lift {
-    transition: var(--transition-smooth);
-  }
-  
-  .hover-lift:hover {
-    transform: translateY(-4px);
-    box-shadow: var(--shadow-lg);
-  }
-  
-  .hover-scale {
-    transition: var(--transition-bounce);
-  }
-  
-  .hover-scale:hover {
-    transform: scale(1.02);
-  }
-  
-  .bg-gradient-primary {
-    background: var(--gradient-primary);
-  }
-  
-  .bg-gradient-accent {
-    background: var(--gradient-accent);
-  }
-  
-  .bg-gradient-hero {
-    background: var(--gradient-hero);
-  }
-  
-  .bg-gradient-card {
-    background: var(--gradient-card);
-  }
-  
-  .shadow-card {
-    box-shadow: var(--shadow-card);
-  }
-  
-  .shadow-accent {
-    box-shadow: var(--shadow-accent);
-  }
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(40px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes scaleIn {
-  from {
-    opacity: 0;
-    transform: scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
- */
-
-
-
-
-
-
-
-
-
- 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700&display=swap');
 
 @tailwind base;
@@ -339,5 +108,37 @@
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
     --ring: 142 35% 40%;
+  }
+}
+@layer components {
+  /* Document-wide photo background, blended with your theme. */
+  .page-photo {
+    position: relative;
+    isolation: isolate; /* keep fixed bg behind all content */
+  }
+  .page-photo::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background-image:
+      linear-gradient(
+        0deg,
+        hsl(var(--background) / var(--overlay-alpha, 0.78)),
+        hsl(var(--background) / var(--overlay-alpha, 0.78))
+      ),
+      var(--page-image, url('/images/realty-hero.jpg'));
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: var(--page-position, 50% 35%);
+    background-blend-mode: multiply;
+    transform: translateZ(0);     /* avoid tearing */
+    will-change: transform;
+  }
+
+  /* Optional: if you ever keep per-section backgrounds, this fades top/bottom edges */
+  .edge-fade {
+    -webkit-mask-image: linear-gradient(180deg, transparent, #000 10%, #000 90%, transparent);
+            mask-image: linear-gradient(180deg, transparent, #000 10%, #000 90%, transparent);
   }
 }

@@ -1,35 +1,30 @@
-import rowvillas from "@/assets/rowvilla.png"; // or keep logo3 if you prefer
+import rowvillas from "@/assets/rowvilla.png";
 import logo3 from "@/assets/logo3.jpeg";
 
 const Hero = () => {
   return (
     <section
       id="home"
-      // keep section from jumping under sticky header when using hash links
       className="relative overflow-hidden scroll-mt-[92px] md:scroll-mt-[104px]"
     >
-      {/* Background image */}
       <div className="absolute inset-0 z-0">
         <img
-          src={logo3} // change to rowvillas if needed
+          src={logo3}
           alt="Luxury real estate property"
           className="w-full h-full object-cover"
           loading="eager"
           fetchPriority="high"
           decoding="async"
         />
-        {/* Subtle right-side darkening to boost text contrast */}
         <div className="absolute inset-0 bg-gradient-to-l from-black/35 via-black/10 to-transparent pointer-events-none" />
       </div>
 
-      {/* Content wrapper:
-         - pt-* keeps content below fixed header (h-20 md:h-24)
-         - min-h-screen keeps it full-height
-         - center on mobile, push to right on ≥sm */}
-      <div className="relative z-10 min-h-screen
+      <div
+        className="relative z-10 min-h-screen
                       pt-[92px] md:pt-[104px] 
                       container mx-auto px-4 sm:px-6 lg:px-8
-                      flex items-start  justify-center sm:justify-end">
+                      flex items-start  justify-center sm:justify-end"
+      >
         <div className="max-w-[min(90vw,48rem)] text-center sm:text-right mr-0 sm:mr-4 md:mr-10 ">
           <h1
             className="text-3xl md:text-6xl lg:text-6xl font-playfair font-bold italic

@@ -21,7 +21,8 @@ const Header: React.FC = () => {
           </div>
           <button
             onClick={handleLogout}
-            className="px-4 py-2 rounded-lg bg-gradient-primary text-primary-foreground font-medium hover-lift transition"
+            variant="outline"
+            className="inline-flex items-center justify-center px-6 py-3 border border-primary text-primary rounded-lg font-medium hover:bg-primary hover:text-primary-foreground transition-all duration-200"
           >
             Logout
           </button>

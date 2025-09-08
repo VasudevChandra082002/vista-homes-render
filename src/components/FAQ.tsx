@@ -49,14 +49,14 @@ const FAQ: React.FC = () => {
   };
 
   return (
-    <section className="py-20 bg-muted/30">
+    <section className="py-20 ">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-16 animate-fade-in">
             <h2 className="text-3xl md:text-5xl font-playfair font-bold text-foreground mb-4">
               Frequently Asked Questions
             </h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+            <p className="text-xl text-white max-w-2xl mx-auto">
               Get answers to the most common questions about buying, selling, and investing in real estate.
             </p>
           </div>
@@ -111,7 +111,7 @@ const FAQ: React.FC = () => {
           </div>
 
           <div className="text-center mt-12 animate-fade-in">
-            <p className="text-muted-foreground mb-4">
+            <p className="text-white mb-4">
               Still have questions? We're here to help!
             </p>
             <div className="flex flex-col sm:flex-row justify-center space-y-3 sm:space-y-0 sm:space-x-4">

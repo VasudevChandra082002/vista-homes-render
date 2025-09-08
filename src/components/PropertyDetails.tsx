@@ -27,17 +27,18 @@ import Footer2 from "./Footer2";
 const FALLBACK_IMG = "/placeholder.jpg";
 
 
-function formatCurrency(num) {
-  if (num == null || Number.isNaN(Number(num))) return "—";
-  try {
+function formatCurrency(value: any) {
+  if (value == null) return "—";
+
+  if (!isNaN(Number(value))) {
     return new Intl.NumberFormat("en-IN", {
       style: "currency",
       currency: "INR",
       maximumFractionDigits: 0,
-    }).format(Number(num));
-  } catch {
-    return `₹${Number(num).toLocaleString("en-IN")}`;
+    }).format(Number(value));
   }
+
+  return value;
 }
 
 type Property = {
@@ -83,6 +84,29 @@ const PropertyDetails: React.FC = () => {
   const [contactModalOpen, setContactModalOpen] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [loadedImages, setLoadedImages] = useState<Set<number>>(new Set());
+  
+  const [emiModalOpen, setEmiModalOpen] = useState(false);
+  const [months, setMonths] = useState(120); // default 10 years
+  const [emi, setEmi] = useState<number | null>(null);
+
+   const calculateEmi = () => {
+    if (!property?.price) return;
+    const principal = Number(property.price);
+    const annualRate = 9; // fixed 9%
+    const monthlyRate = annualRate / 12 / 100;
+    const n = months;
+
+    if (monthlyRate === 0) {
+      setEmi(principal / n);
+      return;
+    }
+
+    const emiValue =
+      (principal * monthlyRate * Math.pow(1 + monthlyRate, n)) /
+      (Math.pow(1 + monthlyRate, n) - 1);
+
+    setEmi(emiValue);
+  };
 
   const {
     data: property,
@@ -181,8 +205,8 @@ const PropertyDetails: React.FC = () => {
   if (isError || !property) {
     return (
       <section className="py-16 container mx-auto px-4">
-        <Button variant="ghost" onClick={handleBackClick} className="mb-8">
-          <ArrowLeft className="w-4 h-4 mr-2" /> Back to Home
+        <Button variant="ghost" onClick={handleBackClick} className="mb-8 text-white">
+          <ArrowLeft className="w-4 h-4 mr-2 " /> Back to Home
         </Button>
         <div className="text-destructive">
           {(error as Error)?.message || "Failed to load property."}
@@ -358,6 +382,13 @@ const PropertyDetails: React.FC = () => {
               >
                 Contact Agent
               </Button>
+  <Button
+          onClick={() => setEmiModalOpen(true)}
+          className="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-all duration-200"
+        >
+          EMI Calculator
+        </Button>
+
             </div>
           </CardContent>
         </Card>
@@ -487,8 +518,75 @@ const PropertyDetails: React.FC = () => {
         </div>
       )}
 
-      <Contact />
-      <Footer2 />
+       {emiModalOpen && (
+        <div
+          className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4"
+          onClick={() => setEmiModalOpen(false)}
+        >
+          <div
+            className="bg-white rounded-lg max-w-md w-full p-6"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-2xl font-bold text-gray-800">
+                EMI Calculator
+              </h2>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8"
+                onClick={() => setEmiModalOpen(false)}
+              >
+                <X className="w-5 h-5" />
+              </Button>
+            </div>
+
+            <p className="text-gray-600 mb-4">
+              Property Price:{" "}
+              <span className="font-semibold">
+                {formatCurrency(property?.price)}
+              </span>
+            </p>
+
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Number of Months
+                </label>
+                <input
+                  type="number"
+                  value={months}
+                  min={12}
+                  step={12}
+                  onChange={(e) => setMonths(Number(e.target.value))}
+                  className="w-full border rounded px-3 py-2"
+                />
+              </div>
+
+              <Button
+                onClick={calculateEmi}
+                className="w-full bg-primary text-white rounded-lg hover:bg-primary/90"
+              >
+                Calculate EMI (9% Interest)
+              </Button>
+
+              {emi !== null && (
+                <div className="mt-4 p-3 bg-green-50 rounded-lg text-center">
+                  <p className="text-gray-700">
+                    Estimated EMI:{" "}
+                    <span className="font-bold text-lg text-green-700">
+                      {formatCurrency(Math.round(emi))}
+                    </span>
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* <Contact />
+      <Footer2 /> */}
     </>
   );
 };

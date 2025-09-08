@@ -1,3 +1,7 @@
+
+
+
+
 import React, { useEffect, useMemo, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -16,18 +20,20 @@ const STATUS_TABS = [
   { value: "completed", label: "Completed" },
 ];
 
-function formatCurrency(num: any) {
-  if (num == null || Number.isNaN(Number(num))) return "—";
-  try {
+function formatCurrency(value: any) {
+  if (value == null) return "—";
+
+  if (!isNaN(Number(value))) {
     return new Intl.NumberFormat("en-IN", {
       style: "currency",
       currency: "INR",
       maximumFractionDigits: 0,
-    }).format(Number(num));
-  } catch {
-    return `₹${Number(num).toLocaleString("en-IN")}`;
+    }).format(Number(value));
   }
+
+  return value;
 }
+
 
 /** Prioritize above-the-fold cards (first row). Adjust if your layout differs. */
 const shouldPrioritize = (index: number) => index < 3;
@@ -225,13 +231,13 @@ const FeaturedProperties = () => {
   }, [filtered]);
 
   return (
-    <section id="properties" className="py-20 bg-muted/30">
+    <section id="properties" className="py-20 ">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-10 animate-fade-in">
           <h2 className="text-3xl md:text-5xl font-playfair font-bold text-foreground mb-4">
             Featured Properties
           </h2>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-xl text-white max-w-2xl mx-auto">
             Discover our handpicked selection of premium properties in the most desirable locations.
           </p>
         </div>
@@ -292,3 +298,4 @@ const FeaturedProperties = () => {
 };
 
 export default FeaturedProperties;
+
