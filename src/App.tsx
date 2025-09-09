@@ -19,6 +19,7 @@ import PropertyPage from "./pages/admin/Property";
 import PropertyDetails from "./components/PropertyDetails";
 import TeamsPage from "./pages/admin/Team";
 import UserProperty from "./pages/UserProperty";
+import ScrollToTop from "./components/ScrollToTop";
 // import Users from "@/pages/admin/Users";
 // import Settings from "@/pages/admin/Settings";
 
@@ -30,6 +31,7 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
+      <ScrollToTop />
         <Routes>
           {/* Public routes */}
           <Route path="/" element={<Index />} />

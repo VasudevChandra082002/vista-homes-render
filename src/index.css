@@ -7,6 +7,7 @@
 
 /* Real Estate Design System - Professional & Modern */
 @layer base {
+  
   :root {
     /* Warm, sunlit base */
     --background: 45 33% 90%;            /* warm ivory */

@@ -146,7 +146,7 @@ const Contact: React.FC = () => {
                       </p>
                       <div className="space-y-1">
                         {info.details.map((detail, idx) => (
-                          <p key={idx} className="text-sm font-medium text-white">
+                          <p  key={idx} className="text-sm font-medium text-white">
                             {detail}
                           </p>
                         ))}
