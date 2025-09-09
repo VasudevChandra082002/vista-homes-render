@@ -29,7 +29,7 @@ const Header = () => {
           </a>
 
           {/* Desktop Navigation - hidden below 1150px */}
-          <nav className="hidden xl:flex items-center absolute left-1/2 -translate-x-1/2 gap-4 lg:gap-8 xl:gap-10">
+          <nav className="hidden xl:flex items-center absolute left-3/4 -translate-x-1/2 gap-4 lg:gap-8 xl:gap-10">
             {navItems.map((item) => (
               <a
                 key={item.name}

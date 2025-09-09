@@ -26,7 +26,6 @@ import Footer2 from "./Footer2";
 
 const FALLBACK_IMG = "/placeholder.jpg";
 
-
 function formatCurrency(value: any) {
   if (value == null) return "—";
 
@@ -84,18 +83,30 @@ const PropertyDetails: React.FC = () => {
   const [contactModalOpen, setContactModalOpen] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [loadedImages, setLoadedImages] = useState<Set<number>>(new Set());
-  
+  const [downPayment, setDownPayment] = useState<number>(0);
+
   const [emiModalOpen, setEmiModalOpen] = useState(false);
   const [months, setMonths] = useState(120); // default 10 years
   const [emi, setEmi] = useState<number | null>(null);
 
-   const calculateEmi = () => {
-    if (!property?.price) return;
-    const principal = Number(property.price);
-    const annualRate = 9; // fixed 9%
-    const monthlyRate = annualRate / 12 / 100;
-    const n = months;
+  const calculateEmi = () => {
+    const rawPrice = property?.price;
+    const priceNum = Number(rawPrice);
+    if (!isFinite(priceNum)) {
+      setEmi(null);
+      return;
+    }
 
+    const dp = Math.max(Number(downPayment) || 0, 0);
+    const principal = Math.max(priceNum - dp, 0); // Price - Down Payment
+    const annualRate = 9; // fixed 9% p.a.
+    const monthlyRate = annualRate / 12 / 100;
+    const n = Math.max(Number(months) || 0, 0);
+
+    if (n === 0) {
+      setEmi(null);
+      return;
+    }
     if (monthlyRate === 0) {
       setEmi(principal / n);
       return;
@@ -205,7 +216,11 @@ const PropertyDetails: React.FC = () => {
   if (isError || !property) {
     return (
       <section className="py-16 container mx-auto px-4">
-        <Button variant="ghost" onClick={handleBackClick} className="mb-8 text-white">
+        <Button
+          variant="ghost"
+          onClick={handleBackClick}
+          className="mb-8 text-white"
+        >
           <ArrowLeft className="w-4 h-4 mr-2 " /> Back to Home
         </Button>
         <div className="text-destructive">
@@ -226,7 +241,7 @@ const PropertyDetails: React.FC = () => {
   return (
     <>
       <Header2 />
-     <section className="container mx-auto px-4 pt-28 md:pt-32 pb-16">
+      <section className="container mx-auto px-4 pt-28 md:pt-32 pb-16">
         <Button variant="ghost" onClick={handleBackClick} className="mb-4">
           <ArrowLeft className="w-4 h-4 mr-2" /> Back to Home
         </Button>
@@ -376,19 +391,17 @@ const PropertyDetails: React.FC = () => {
               <Button
                 // className="bg-gradient-primary"
                 onClick={openContactModal}
-                  variant="outline"
-        className="inline-flex items-center justify-center px-6 py-3 border border-primary text-primary rounded-lg font-medium hover:bg-primary hover:text-primary-foreground transition-all duration-200"
-
+                variant="outline"
+                className="inline-flex items-center justify-center px-6 py-3 border border-primary text-primary rounded-lg font-medium hover:bg-primary hover:text-primary-foreground transition-all duration-200"
               >
                 Contact Agent
               </Button>
-  <Button
-          onClick={() => setEmiModalOpen(true)}
-          className="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-all duration-200"
-        >
-          EMI Calculator
-        </Button>
-
+              <Button
+                onClick={() => setEmiModalOpen(true)}
+                className="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-all duration-200"
+              >
+                EMI Calculator
+              </Button>
             </div>
           </CardContent>
         </Card>
@@ -482,15 +495,17 @@ const PropertyDetails: React.FC = () => {
                 <div className="bg-blue-100 p-2 rounded-full">
                   <Phone className="w-5 h-5 text-blue-600" />
                 </div>
-                <div>
-                  <p className="text-sm text-gray-500">Call us at</p>
-                  <a
-                    href="tel:+919686102055"
-                    className="text-blue-600 font-medium hover:underline"
-                  >
+
+                <a
+                  href="tel:+919686102055"
+                  className="text-blue-600 font-medium hover:underline"
+                >
+                  {" "}
+                  <div>
+                    <p className="text-sm text-gray-500">Call us at</p>
                     +91 9686102055
-                  </a>
-                </div>
+                  </div>
+                </a>
               </div>
 
               <div className="flex items-center gap-3 p-3 bg-green-50 rounded-lg">
@@ -518,13 +533,13 @@ const PropertyDetails: React.FC = () => {
         </div>
       )}
 
-       {emiModalOpen && (
+      {emiModalOpen && (
         <div
           className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4"
           onClick={() => setEmiModalOpen(false)}
         >
           <div
-            className="bg-white rounded-lg max-w-md w-full p-6"
+            className="bg-white rounded-lg w-full max-w-2xl lg:max-w-3xl p-6 lg:p-8"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex justify-between items-center mb-6">
@@ -541,49 +556,121 @@ const PropertyDetails: React.FC = () => {
               </Button>
             </div>
 
-            <p className="text-gray-600 mb-4">
-              Property Price:{" "}
-              <span className="font-semibold">
-                {formatCurrency(property?.price)}
-              </span>
-            </p>
+            <div className="space-y-6">
+              {/* Price + quick facts */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="col-span-1 md:col-span-3">
+                  <p className="text-gray-600">
+                    Property Price:&nbsp;
+                    <span className="font-semibold">
+                      {formatCurrency(property?.price)}
+                    </span>
+                  </p>
+                </div>
+              </div>
 
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Number of Months
-                </label>
-                <input
-                  type="number"
-                  value={months}
-                  min={12}
-                  step={12}
-                  onChange={(e) => setMonths(Number(e.target.value))}
-                  className="w-full border rounded px-3 py-2"
-                />
+              {/* Inputs */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Number of Months
+                  </label>
+                  <input
+                    type="number"
+                    value={months}
+                    min={12}
+                    step={12}
+                    onChange={(e) => setMonths(Number(e.target.value))}
+                    className="w-full border rounded px-3 py-2"
+                  />
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    Tip: 120 = 10 years, 240 = 20 years
+                  </p>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Initial Down Payment
+                  </label>
+                  <input
+                    type="number"
+                    value={downPayment}
+                    min={0}
+                    max={Number(property?.price) || undefined}
+                    step={50000}
+                    onChange={(e) => setDownPayment(Number(e.target.value))}
+                    className="w-full border rounded px-3 py-2"
+                    placeholder="e.g. 500000"
+                  />
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    Amount you pay upfront.
+                  </p>
+                  {Number(downPayment) > Number(property?.price) && (
+                    <p className="mt-1 text-sm text-destructive">
+                      Down payment cannot exceed the property price.
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              {/* Breakdown */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="p-3 rounded-lg border bg-gray-50">
+                  <p className="text-xs text-gray-500">Loan Amount</p>
+                  <p className="font-semibold">
+                    {formatCurrency(
+                      Math.max(
+                        Number(property?.price) - (Number(downPayment) || 0),
+                        0
+                      )
+                    )}
+                  </p>
+                </div>
+                <div className="p-3 rounded-lg border bg-gray-50">
+                  <p className="text-xs text-gray-500">Interest Rate</p>
+                  <p className="font-semibold">9% p.a.</p>
+                </div>
+                <div className="p-3 rounded-lg border bg-gray-50">
+                  <p className="text-xs text-gray-500">Tenure</p>
+                  <p className="font-semibold">{months} months</p>
+                </div>
               </div>
 
               <Button
                 onClick={calculateEmi}
+                disabled={
+                  !isFinite(Number(property?.price)) ||
+                  Number(months) <= 0 ||
+                  Number(downPayment) > Number(property?.price)
+                }
                 className="w-full bg-primary text-white rounded-lg hover:bg-primary/90"
               >
                 Calculate EMI (9% Interest)
               </Button>
 
               {emi !== null && (
-                <div className="mt-4 p-3 bg-green-50 rounded-lg text-center">
+                <div className="mt-2 p-4 bg-green-50 rounded-lg text-center">
                   <p className="text-gray-700">
-                    Estimated EMI:{" "}
+                    Estimated Monthly EMI:&nbsp;
                     <span className="font-bold text-lg text-green-700">
                       {formatCurrency(Math.round(emi))}
                     </span>
                   </p>
+                  {/* <p className="text-xs text-muted-foreground mt-1">
+              EMI is calculated on (Price − Down Payment) at 9% p.a., compounded
+              monthly.
+            </p> */}
                 </div>
               )}
             </div>
           </div>
         </div>
       )}
+
+      {/* </div>
+          </div>
+        </div>
+      )} */}
 
       {/* <Contact />
       <Footer2 /> */}

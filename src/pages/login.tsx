@@ -40,8 +40,8 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-hero animate-fade-in">
-      <div className="bg-card shadow-card rounded-2xl p-10 w-full max-w-md animate-slide-up">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-hero animate-fade-in ">
+      <div className="bg-card shadow-card rounded-2xl p-10 w-full max-w-md animate-slide-up border border-primary">
         <h1 className="text-3xl font-bold text-center mb-6 text-primary">
           Admin Login
         </h1>
@@ -85,8 +85,7 @@ const Login: React.FC = () => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3 rounded-lg bg-gradient-primary text-primary-foreground font-semibold shadow-md hover-lift transition disabled:opacity-60"
-          >
+            className="w-full inline-flex items-center justify-center px-6 py-3 border border-primary text-primary rounded-lg font-medium hover:bg-primary hover:text-primary-foreground transition-all duration-200">
             {loading ? "Signing in..." : "Sign In"}
           </button>
         </form>
